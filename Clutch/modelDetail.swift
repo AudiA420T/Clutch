@@ -204,60 +204,12 @@ class modelDetail: UIViewController, UIWebViewDelegate {
                     }
                     
                 }
-        
- 
-//CAUTION!!! NEED TO UPDATE THIS SO THERE AREN'T 2 OF THE SAME FUNCTION IN HERE
-            for model in self.specificModels {
-                
-                if self.gen == model.gen {
-                    
-                    self.chosenModel.append(model)
-                    
-                    if self.chosenModel[0].photo.count == 0 {
-                        
-                        println("There are \(self.chosenModel[0].photo.count) images in Chosen Model Array")
-                        self.genPic.image = UIImage(named: "carholder.png")
-                        
-                    } else {
-                        
-                        self.activityIndicator = UIActivityIndicatorView(frame: CGRectMake(0, 0, 50, 50))
-                        self.activityIndicator.center = self.view.center
-                        self.activityIndicator.hidesWhenStopped = true
-                        self.activityIndicator.activityIndicatorViewStyle = UIActivityIndicatorViewStyle.White
-                        self.view.addSubview(self.activityIndicator)
-                        self.activityIndicator.startAnimating()
-                        UIApplication.sharedApplication().beginIgnoringInteractionEvents()
-                        
-                        let url = NSURL(string: "\(self.chosenModel[0].photo[0])")
-                        let data = NSData(contentsOfURL: url!)
-                        self.genPic.contentMode = UIViewContentMode.ScaleAspectFit
-                        self.genPic.image = UIImage(data: data!)
-                                
-                        self.activityIndicator.stopAnimating()
-                        UIApplication.sharedApplication().endIgnoringInteractionEvents()
-                                
-                    }
-                    
-                    if self.chosenModel[0].prevFam.count > 1 {
-                        
-                        let button = UIButton()
-                        button.frame = CGRectMake(25, 80, 30, 30)
-                        button.backgroundColor = UIColor.whiteColor()
-                        button.tag = 3
-                        button.setImage(UIImage(named: "leftarrow.png"), forState: UIControlState())
-                        button.addTarget(self, action: "handleSwipes:", forControlEvents: UIControlEvents.TouchUpInside)
-                        
-                        self.view.addSubview(button)
-                        
-                    }
-                    
-                }
-                
-                }
+            
+                self.updateGenInfo(self.gen)
         
             }
         
-    }
+        }
     
         //Trying to do the "similar models" piece here... trims be damned.
         
@@ -340,7 +292,7 @@ class modelDetail: UIViewController, UIWebViewDelegate {
     self.similarModView.indicatorStyle = .Default*/
     
 
-//CAUTION!!! This is not the only way a car gets rendered. Remember to check the other function (not ideal I know)
+//This is how the app changes cars when a swipe is done.
         func updateGenInfo(newGent: String) {
     
         for model in specificModels {
@@ -365,10 +317,22 @@ class modelDetail: UIViewController, UIWebViewDelegate {
                     
                 } else {
                     
+                    self.activityIndicator = UIActivityIndicatorView(frame: CGRectMake(0, 0, 200, 200))
+                    self.activityIndicator.backgroundColor = UIColor.whiteColor()
+                    self.activityIndicator.center = self.view.center
+                    self.activityIndicator.hidesWhenStopped = true
+                    self.activityIndicator.activityIndicatorViewStyle = UIActivityIndicatorViewStyle.Gray
+                    self.view.addSubview(self.activityIndicator)
+                    self.activityIndicator.startAnimating()
+                    UIApplication.sharedApplication().beginIgnoringInteractionEvents()
+                    
                     let url = NSURL(string: "\(chosenModel[0].photo[0])")
                     let data = NSData(contentsOfURL: url!)
                     self.genPic.contentMode = UIViewContentMode.ScaleAspectFit
                     self.genPic.image = UIImage(data: data!)
+                    
+                    self.activityIndicator.stopAnimating()
+                    UIApplication.sharedApplication().endIgnoringInteractionEvents()
                     
                 }
             
