@@ -43,6 +43,8 @@
 		19E7D79A1AD84369001D972F /* Splash Screen 2.png in Resources */ = {isa = PBXBuildFile; fileRef = 19E7D7991AD84369001D972F /* Splash Screen 2.png */; };
 		19E7D7CD1AD858B7001D972F /* carholder.png in Resources */ = {isa = PBXBuildFile; fileRef = 19E7D7CC1AD858B7001D972F /* carholder.png */; };
 		19E7D7D11ADC1BBF001D972F /* manufacturers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19E7D7D01ADC1BBF001D972F /* manufacturers.swift */; };
+		19E827181B68992A001C6A75 /* leftarrowwhite.png in Resources */ = {isa = PBXBuildFile; fileRef = 19E827161B68992A001C6A75 /* leftarrowwhite.png */; };
+		19E827191B68992A001C6A75 /* rightarrowwhite.png in Resources */ = {isa = PBXBuildFile; fileRef = 19E827171B68992A001C6A75 /* rightarrowwhite.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -96,6 +98,8 @@
 		19E7D7991AD84369001D972F /* Splash Screen 2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Splash Screen 2.png"; sourceTree = "<group>"; };
 		19E7D7CC1AD858B7001D972F /* carholder.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = carholder.png; sourceTree = "<group>"; };
 		19E7D7D01ADC1BBF001D972F /* manufacturers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = manufacturers.swift; path = ../manufacturers.swift; sourceTree = "<group>"; };
+		19E827161B68992A001C6A75 /* leftarrowwhite.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = leftarrowwhite.png; sourceTree = "<group>"; };
+		19E827171B68992A001C6A75 /* rightarrowwhite.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = rightarrowwhite.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -177,6 +181,8 @@
 				19BD2D961B1E5E320028D8D3 /* multipleCell.swift */,
 				19BD2D9A1B1E61490028D8D3 /* Main.storyboard */,
 				19A39FA41AD6AC4C0052AEB8 /* Images.xcassets */,
+				19E827161B68992A001C6A75 /* leftarrowwhite.png */,
+				19E827171B68992A001C6A75 /* rightarrowwhite.png */,
 				1992C7B11B65AC7C00FEF8B4 /* leftarrow.png */,
 				1992C7B21B65AC7C00FEF8B4 /* rightarrow.png */,
 				1992C7AF1B65A75300FEF8B4 /* x.gif */,
@@ -310,11 +316,13 @@
 				19BD2D9B1B1E61490028D8D3 /* Main.storyboard in Resources */,
 				19A39FA81AD6AC4C0052AEB8 /* LaunchScreen.xib in Resources */,
 				1992C7B01B65A75300FEF8B4 /* x.gif in Resources */,
+				19E827181B68992A001C6A75 /* leftarrowwhite.png in Resources */,
 				19A39FA51AD6AC4C0052AEB8 /* Images.xcassets in Resources */,
 				19E7AFE71B0D2C0C00C34AAB /* person.png in Resources */,
 				19E7D79A1AD84369001D972F /* Splash Screen 2.png in Resources */,
 				1992C7B31B65AC7C00FEF8B4 /* leftarrow.png in Resources */,
 				1992C7B41B65AC7C00FEF8B4 /* rightarrow.png in Resources */,
+				19E827191B68992A001C6A75 /* rightarrowwhite.png in Resources */,
 				19E7AFE51B0D262500C34AAB /* list.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

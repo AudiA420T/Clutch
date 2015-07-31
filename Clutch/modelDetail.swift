@@ -206,7 +206,7 @@ class modelDetail: UIViewController, UIWebViewDelegate {
                 }
             
                 self.updateGenInfo(self.gen)
-        
+                
             }
         
         }
@@ -299,9 +299,41 @@ class modelDetail: UIViewController, UIWebViewDelegate {
         
             if newGent == model.gen {
                 
+                for subview in view.subviews {
+                    if (subview.tag == 10 || subview.tag == 11) {
+                        subview.removeFromSuperview()
+                    }
+                }
+                
                 self.chosenModel = []
                 
                 self.chosenModel.append(model)
+                
+                if self.chosenModel[0].prevFam.count >= 1 {
+                    
+                    println("got left")
+                    let leftButton = UIButton()
+                    leftButton.frame = CGRectMake(self.view.frame.width - (self.view.frame.width - 30), 300, 30, 30)
+                    //leftButton.backgroundColor = UIColor.whiteColor()
+                    leftButton.tag = 10
+                    leftButton.setImage(UIImage(named: "leftarrowwhite.png"), forState: UIControlState())
+                    leftButton.addTarget(self, action: "arrowPressed:", forControlEvents: UIControlEvents.TouchUpInside)
+                    self.view.addSubview(leftButton)
+                    
+                }
+                
+                if self.chosenModel[0].nextFam.count >= 1 {
+                    
+                    println("got right")
+                    let rightButton = UIButton()
+                    rightButton.frame = CGRectMake(self.view.frame.width - 60, 300, 30, 30)
+                    //rightButton.backgroundColor = UIColor.whiteColor()
+                    rightButton.tag = 11
+                    rightButton.setImage(UIImage(named: "rightarrowwhite.png"), forState: UIControlState())
+                    rightButton.addTarget(self, action: "arrowPressed:", forControlEvents: UIControlEvents.TouchUpInside)
+                    self.view.addSubview(rightButton)
+                    
+                }
                 
                 self.genStart = chosenModel[0].startYear
                 self.genEnd = chosenModel[0].endYear
@@ -437,6 +469,12 @@ class modelDetail: UIViewController, UIWebViewDelegate {
        
         }
     
+    }
+    
+    func arrowPressed(sender: UIButton) {
+        
+        performSegueWithIdentifier("multiple", sender: self)
+        
     }
     
     func colorButtonPressed(sender: UIButton) {

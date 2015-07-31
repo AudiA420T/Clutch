@@ -244,7 +244,9 @@ class models: UIViewController, UITableViewDelegate, UITableViewDataSource {
         
         let modelThing = Models()
         
-        if cellClicked == indexPath.row || modelSubset[indexPath.row].photo.count == 0 {
+        if modelSubset[indexPath.row].photo.count == 0 {
+            
+            println("got here no pic")
             
             moCell.topper.text = modelSubset[indexPath.row].mod
             moCell.topper.textColor = UIColor.whiteColor()
