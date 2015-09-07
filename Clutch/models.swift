@@ -17,6 +17,7 @@ class models: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     class Models {
         
+        var objId: String!
         var man: String!
         var mod: String!
         var gen: String!
@@ -49,6 +50,10 @@ class models: UIViewController, UITableViewDelegate, UITableViewDataSource {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
+        //getting rid of the separator bars in the table & making sure behind the table is grey
+        tribble.separatorStyle = UITableViewCellSeparatorStyle.None
+        tribble.backgroundColor = UIColor(red: 100.0/255, green: 100.0/255, blue: 100.0/255, alpha: 1.0)
+        
         //setting the top of the View to show what manufacturer was pressed
         self.title = modelTitle
         
@@ -79,14 +84,14 @@ class models: UIViewController, UITableViewDelegate, UITableViewDataSource {
         self.modelTotal = []
         self.modelSubset = []
         
-        self.activityIndicator = UIActivityIndicatorView(frame: CGRectMake(0, 0, 200, 200))
-        self.activityIndicator.backgroundColor = UIColor.whiteColor()
+        self.activityIndicator = UIActivityIndicatorView(frame: CGRectMake(0, 0, 50, 50))
+        self.activityIndicator.backgroundColor = UIColor.blackColor()
         self.activityIndicator.center = self.view.center
         self.activityIndicator.hidesWhenStopped = true
-        self.activityIndicator.activityIndicatorViewStyle = UIActivityIndicatorViewStyle.Gray
+        self.activityIndicator.activityIndicatorViewStyle = UIActivityIndicatorViewStyle.White
         self.view.addSubview(self.activityIndicator)
         self.activityIndicator.startAnimating()
-        UIApplication.sharedApplication().beginIgnoringInteractionEvents()
+        //UIApplication.sharedApplication().beginIgnoringInteractionEvents()
 
         var yearQuery = PFQuery(className:"Models")
         yearQuery.whereKey("Manufacturer", equalTo: "\(modelTitle)")
@@ -104,6 +109,7 @@ class models: UIViewController, UITableViewDelegate, UITableViewDataSource {
                 
                         //setting up the models as Objects
                         let newModel = Models()
+                        newModel.objId = object.objectId as String!
                         newModel.man = object["Manufacturer"] as? String
                         newModel.mod = object["Model"] as? String
                         newModel.gen = object["GenerationNumber"] as? String
@@ -121,7 +127,6 @@ class models: UIViewController, UITableViewDelegate, UITableViewDataSource {
                         self.modelTotal.append(newModel)
                         self.modelSubset.append(newModel)
                 
-                
                         self.tribble.reloadData()
                 
                     }
@@ -129,7 +134,7 @@ class models: UIViewController, UITableViewDelegate, UITableViewDataSource {
                 }
                 
                 self.activityIndicator.stopAnimating()
-                UIApplication.sharedApplication().endIgnoringInteractionEvents()
+                //UIApplication.sharedApplication().endIgnoringInteractionEvents()
         
             } else {
         
@@ -246,8 +251,6 @@ class models: UIViewController, UITableViewDelegate, UITableViewDataSource {
         
         if modelSubset[indexPath.row].photo.count == 0 {
             
-            println("got here no pic")
-            
             moCell.topper.text = modelSubset[indexPath.row].mod
             moCell.topper.textColor = UIColor.whiteColor()
             moCell.middler.text = "\(modelSubset[indexPath.row].gen) Generation"
@@ -307,12 +310,7 @@ class models: UIViewController, UITableViewDelegate, UITableViewDataSource {
                 destination.gen = modelSubset[cellClicked].gen
                 destination.genStart = modelSubset[cellClicked].newStartYear
                 destination.genEnd = modelSubset[cellClicked].newEndYear
-                
-                if modelSubset[cellClicked].fam != nil {
-                
-                destination.family = modelSubset[cellClicked].fam
-                
-                }
+                destination.objIdInput = modelSubset[cellClicked].objId
                 
             }
         }

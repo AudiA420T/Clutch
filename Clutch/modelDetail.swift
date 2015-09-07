@@ -98,6 +98,8 @@ class modelDetail: UIViewController, UIWebViewDelegate {
     var chosenModel:[Models] = []
     var similarModel:[Models] = []
     
+    var objIdInput = String()
+    
     var manufacturer = String()
     var modelName = String()
     var gen = String()
@@ -118,6 +120,8 @@ class modelDetail: UIViewController, UIWebViewDelegate {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
+        newFamilyFunc(objIdInput)
+        
         println(family)
         
         //setting up the swipe block
@@ -130,31 +134,174 @@ class modelDetail: UIViewController, UIWebViewDelegate {
         view.addGestureRecognizer(leftSwipe)
         view.addGestureRecognizer(rightSwipe)
         
-        self.title = "\(manufacturer) \(modelName)"
-        genTop.text = "\(gen) Generation"
-        genBottom.text = "Produced from \(genStart) to \(genEnd)"
         
-        println("Chose \(gen) Gen \(manufacturer) \(modelName)")
+        /*
+    //This whole thing links up to the scroller
+    func similarModView(buttonSize:CGSize, buttonCount:Int) -> UIView {
+        //creates color buttons in a UIView
+        let buttonView = UIView()
         
-        var yearQuery = PFQuery(className:"Models")
+        //add padding?
+        let padding = CGSizeMake(0, 10)
+        buttonView.frame.size.width = ((buttonSize.width + padding.width) * (CGFloat(buttonCount)))
+        buttonView.frame.size.height = similarScroll.frame.size.height
         
-        if family != "" {
+        //adding the color to the background
+        buttonView.backgroundColor = UIColor.blackColor()
+        buttonView.frame.origin = CGPointMake(0, -64)
         
-        yearQuery.whereKey("Family", equalTo: "\(family)")
+        //add buttons to the view
+        var imageViewer = UIImageView()
+        let imageIncrement = buttonSize.width + padding.width
+        var buttonPosition = CGPointMake(0, 0)
+        
+        //add a loop
+        for car in self.years {
+            button = UIButton()
+            button.frame.size = buttonSize
+            button.tag = year
+            button.setTitle("\(year)", forState: .Normal)
+            button.titleLabel?.font = (UIFont(name: "Arial", size: 28))
+            button.setTitleColor(UIColor.blackColor(), forState: .Normal)
+            button.frame.origin = buttonPosition
+            buttonPosition.x = buttonPosition.x - buttonIncrement
+            //button.backgroundColor = UIColor.blueColor()
+            button.addTarget(self, action: "colorButtonPressed:", forControlEvents: UIControlEvents.TouchUpInside)
+            buttonView.addSubview(button)
             
-        } else {
-            
-        yearQuery.whereKey("Manufacturer", equalTo: "\(manufacturer)")
-        yearQuery.whereKey("Model", equalTo: "\(modelName)")
-            
-        }
+            }
     
-        yearQuery.findObjectsInBackgroundWithBlock {
+        return buttonView
+        
+    }
+
+    
+    let scrollingView = similarModView(CGSizeMake(100.0,50.0), self.years.count)
+    self.similarModView.contentSize = CGSizeMake(scrollingView.frame.size.width, 0)
+    self.similarModView.contentOffset = CGPointMake(self.scrollSize, -64)
+    self.similarModView.addSubview(scrollingView)
+    self.similarModView.showsHorizontalScrollIndicator = true
+    self.similarModView.indicatorStyle = .Default*/
+  
+    }
+    
+    //This one pulls down all cars we need and puts them into appropriate buckets
+    func newFamilyFunc(startingModel: String?) {
+        
+        specificModels = []
+        chosenModel = []
+        
+        self.activityIndicator = UIActivityIndicatorView(frame: CGRectMake(0, 0, 50, 50))
+        self.activityIndicator.backgroundColor = UIColor.blackColor()
+        self.activityIndicator.center = self.view.center
+        self.activityIndicator.hidesWhenStopped = true
+        self.activityIndicator.activityIndicatorViewStyle = UIActivityIndicatorViewStyle.White
+        self.view.addSubview(self.activityIndicator)
+        self.activityIndicator.startAnimating()
+        
+        var inputQuery = PFQuery(className:"Models")
+        inputQuery.whereKey("objectId", equalTo: "\(startingModel!)")
+        inputQuery.findObjectsInBackgroundWithBlock {
+            (objects: [AnyObject]?, error: NSError?) -> Void in
+            if error == nil {
+                
+                // Do something with the found objects
+                if let objects = objects as? [PFObject] {
+                    for object in objects {
+                
+                println("Successfully retrieved \(objects.count) NewFamilyFunc Model")
+                
+                        //if only one
+                        if object["Family"] == nil {
+                            
+                            println("fam is zero")
+                        
+                            let newModel = Models()
+                            newModel.man = object["Manufacturer"] as! String
+                            newModel.mod = object["Model"] as! String
+                            newModel.gen = object["GenerationNumber"] as! String
+                            newModel.startYear = object["startYear"] as! Int
+                            newModel.endYear = object["endYear"] as! Int
+                        
+                            if object["previousFamily"] != nil {
+                            
+                                newModel.prevFam = object["previousFamily"] as! NSArray
+                            
+                                }
+                        
+                                if object["nextFamily"] != nil {
+                            
+                                newModel.nextFam = object["nextFamily"] as! NSArray
+                            
+                                }
+                        
+                                if object["similarModels"] != nil {
+                            
+                                    newModel.simModels = object["similarModels"] as! NSArray
+                            
+                                }
+                            
+                                if object["image"] != nil {
+                            
+                                    newModel.photo = object["image"] as! NSArray
+                            
+                                }
+                        
+                        
+                                self.specificModels.append(newModel)
+                            
+                                self.updateGenInfo(newModel.gen)
+                        
+                        //This below is if the object has a family
+                        } else {
+                            
+                                println("gotfam")
+                        
+                                self.manufacturer = object["Manufacturer"] as! String
+                                self.modelName = object["Model"] as! String
+                                self.gen = object["GenerationNumber"] as! String
+                                self.genStart = object["startYear"] as! Int
+                                self.genEnd = object["endYear"] as! Int
+                                self.family = object["Family"] as! String
+                            
+                                println(self.family)
+                                self.familyGrab(self.family)
+                
+                        }
+            
+                    }
+        
+                } else {
+                
+                        println("There was an \(error)")
+            
+                }
+            
+            /*self.title = "\(self.manufacturer) \(self.modelName)"
+            self.genTop.text = "\(self.gen) Generation"
+            self.genBottom.text = "Produced from \(self.genStart) to \(self.genEnd)"
+            
+            self.reloadInputViews()*/
+            
+            }
+        
+        }
+        
+    }
+    
+    func familyGrab(family: String) {
+    
+        specificModels = []
+        chosenModel = []
+        
+        var secondQuery = PFQuery(className:"Models")
+        secondQuery.whereKey("Family", equalTo: family)
+        secondQuery.findObjectsInBackgroundWithBlock {
             (objects: [AnyObject]?, error: NSError?) -> Void in
             if error == nil {
                 
                 // The find succeeded.
-                println("Successfully retrieved \(objects!.count) models in that family")
+                println("Got the rest of them????")
                 
                 // Do something with the found objects
                 if let objects = objects as? [PFObject] {
@@ -201,98 +348,22 @@ class modelDetail: UIViewController, UIWebViewDelegate {
                         
                         self.specificModels.append(newModel)
                         
+                        self.reloadInputViews()
+                        
                     }
                     
                 }
-            
+                
                 self.updateGenInfo(self.gen)
                 
             }
-        
-        }
-    
-        //Trying to do the "similar models" piece here... trims be damned.
-        
-        var similarQuery = PFQuery(className:"Models")
-        similarQuery.whereKey("objectId", containedIn: similarMod as [AnyObject])
-        similarQuery.findObjectsInBackgroundWithBlock {
-            (objects: [AnyObject]?, error: NSError?) -> Void in
-            if error == nil {
-                
-                // The find succeeded.
-                println("Successfully retrieved \(objects!.count) similar models")
-                
-                // Do something with the found objects
-                if let objects = objects as? [PFObject] {
-                    for object in objects {
-                        
-                        if object["image"] != nil {
-                            
-                            //self.similarModPic.append(object["image"] as! [String])
-    
-                        }
-
-                        self.reloadInputViews()
-                    
-                    }
-                        
-                }
-                
-            }
             
         }
-        
+    
     }
-
-    //This whole thing links up to the scroller
-    /*func similarModView(buttonSize:CGSize, buttonCount:Int) -> UIView {
-        //creates color buttons in a UIView
-        let buttonView = UIView()
-        
-        //add padding?
-        let padding = CGSizeMake(0, 10)
-        buttonView.frame.size.width = ((buttonSize.width + padding.width) * (CGFloat(buttonCount)))
-        buttonView.frame.size.height = similarScroll.frame.size.height
-        
-        //adding the color to the background
-        buttonView.backgroundColor = UIColor.blackColor()
-        buttonView.frame.origin = CGPointMake(0, -64)
-        
-        //add buttons to the view
-        var imageViewer = UIImageView()
-        let imageIncrement = buttonSize.width + padding.width
-        var buttonPosition = CGPointMake(0, 0)
-        
-        //add a loop
-        for car in self.years {
-            button = UIButton()
-            button.frame.size = buttonSize
-            button.tag = year
-            button.setTitle("\(year)", forState: .Normal)
-            button.titleLabel?.font = (UIFont(name: "Arial", size: 28))
-            button.setTitleColor(UIColor.blackColor(), forState: .Normal)
-            button.frame.origin = buttonPosition
-            buttonPosition.x = buttonPosition.x - buttonIncrement
-            //button.backgroundColor = UIColor.blueColor()
-            button.addTarget(self, action: "colorButtonPressed:", forControlEvents: UIControlEvents.TouchUpInside)
-            buttonView.addSubview(button)
-            
-            }
-    
-        return buttonView
-        
-    }
-
-    
-    let scrollingView = similarModView(CGSizeMake(100.0,50.0), self.years.count)
-    self.similarModView.contentSize = CGSizeMake(scrollingView.frame.size.width, 0)
-    self.similarModView.contentOffset = CGPointMake(self.scrollSize, -64)
-    self.similarModView.addSubview(scrollingView)
-    self.similarModView.showsHorizontalScrollIndicator = true
-    self.similarModView.indicatorStyle = .Default*/
     
 
-//This is how the app changes cars when a swipe is done.
+//This is how the app changes cars within a family
         func updateGenInfo(newGent: String) {
     
         for model in specificModels {
@@ -349,33 +420,25 @@ class modelDetail: UIViewController, UIWebViewDelegate {
                     
                 } else {
                     
-                    self.activityIndicator = UIActivityIndicatorView(frame: CGRectMake(0, 0, 200, 200))
-                    self.activityIndicator.backgroundColor = UIColor.whiteColor()
-                    self.activityIndicator.center = self.view.center
-                    self.activityIndicator.hidesWhenStopped = true
-                    self.activityIndicator.activityIndicatorViewStyle = UIActivityIndicatorViewStyle.Gray
-                    self.view.addSubview(self.activityIndicator)
-                    self.activityIndicator.startAnimating()
-                    UIApplication.sharedApplication().beginIgnoringInteractionEvents()
-                    
                     let url = NSURL(string: "\(chosenModel[0].photo[0])")
                     let data = NSData(contentsOfURL: url!)
                     self.genPic.contentMode = UIViewContentMode.ScaleAspectFit
                     self.genPic.image = UIImage(data: data!)
                     
                     self.activityIndicator.stopAnimating()
-                    UIApplication.sharedApplication().endIgnoringInteractionEvents()
                     
                 }
             
+            self.activityIndicator.stopAnimating()
+                
             view.reloadInputViews()
                 
             }
-        
-        }
-        
+            
+            }
+            
     }
-    
+
     func handleSwipes(sender:UISwipeGestureRecognizer) {
             if (sender.direction == .Left) {
                 println("Swipe Left")
@@ -384,6 +447,14 @@ class modelDetail: UIViewController, UIWebViewDelegate {
                 var newOne = i! + 1
                 
                 if newOne < specificModels.count {
+                    
+                    self.activityIndicator = UIActivityIndicatorView(frame: CGRectMake(0, 0, 50, 50))
+                    self.activityIndicator.backgroundColor = UIColor.blackColor()
+                    self.activityIndicator.center = self.view.center
+                    self.activityIndicator.hidesWhenStopped = true
+                    self.activityIndicator.activityIndicatorViewStyle = UIActivityIndicatorViewStyle.White
+                    self.view.addSubview(self.activityIndicator)
+                    self.activityIndicator.startAnimating()
                 
                 println(genGuide[newOne])
                     
@@ -445,8 +516,11 @@ class modelDetail: UIViewController, UIWebViewDelegate {
                         performSegueWithIdentifier("multiple", sender: self)
                         
                     } else if chosenModel[0].prevFam.count == 1 {
-                     
-                        println(chosenModel[0].prevFam)
+                        
+                        var objConvertOne = chosenModel[0].prevFam as NSArray as! [String]
+                        var objConvertTwo = objConvertOne[0] as String
+                        
+                        newFamilyFunc(objConvertTwo)
                         
                     } else {
                     
@@ -484,8 +558,6 @@ class modelDetail: UIViewController, UIWebViewDelegate {
         println("\(pressedText) Gen")
         
         self.gen = pressedText
-        
-        //updateGenInfo(sender.titleLabel!.text!)
         
 }
 

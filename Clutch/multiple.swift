@@ -82,7 +82,7 @@ class multiple: UIViewController, UITableViewDelegate, UITableViewDataSource {
                         
                         //setting up the models as Objects
                         let newModel = Models()
-                        //newModel.id = object["objectId"] as! String
+                        newModel.id = object.objectId as String!
                         newModel.man = object["Manufacturer"] as! String
                         newModel.mod = object["Model"] as! String
                         newModel.gen = object["GenerationNumber"] as! String
@@ -184,12 +184,7 @@ class multiple: UIViewController, UITableViewDelegate, UITableViewDataSource {
                 destination.gen = modelsToGo[cellClicked].gen
                 destination.genStart = modelsToGo[cellClicked].startYear
                 destination.genEnd = modelsToGo[cellClicked].endYear
-                
-                if modelsToGo[cellClicked].genFam != nil {
-                    
-                    destination.family = modelsToGo[cellClicked].genFam
-                    
-                }
+                destination.objIdInput = modelsToGo[cellClicked].id
                 
             }
             
