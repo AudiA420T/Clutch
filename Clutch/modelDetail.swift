@@ -22,21 +22,33 @@ class modelDetail: UIViewController, UIWebViewDelegate {
     
     @IBAction func wikiLink(sender: AnyObject) {
         
-        let webV:UIWebView = UIWebView(frame: CGRectMake(0, 70, UIScreen.mainScreen().bounds.width, UIScreen.mainScreen().bounds.height))
-        webV.loadRequest(NSURLRequest(URL: NSURL(string: "https://en.wikipedia.org/wiki/Audi_A4")!))
-        webV.delegate = self
-        webV.tag = 2
-        self.view.addSubview(webV)
+        if chosenModel[0].wikiurl == nil {
+            
+            var alert = UIAlertController(title: "Link Not Found", message: "No Wikipedia link found for this model", preferredStyle: UIAlertControllerStyle.Alert)
+            alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
+            self.presentViewController(alert, animated: true, completion: nil)
+            
+        } else {
+            
+            println(chosenModel[0].wikiurl)
         
-        let button = UIButton()
-        button.frame = CGRectMake(self.view.frame.width - 40, 80, 30, 30)
-        //button.backgroundColor = UIColor.greenColor()
-        //button.setTitle("Test Button", forState: UIControlState.Normal)
-        button.tag = 3
-        button.setImage(UIImage(named: "x.gif"), forState: UIControlState())
-        button.addTarget(self, action: "buttonAction:", forControlEvents: UIControlEvents.TouchUpInside)
+            let webV:UIWebView = UIWebView(frame: CGRectMake(0, 70, UIScreen.mainScreen().bounds.width, UIScreen.mainScreen().bounds.height))
+            webV.loadRequest(NSURLRequest(URL: NSURL(string: chosenModel[0].wikiurl!)!))
+            webV.delegate = self
+            webV.tag = 2
+            self.view.addSubview(webV)
         
-        self.view.addSubview(button)
+            let button = UIButton()
+            button.frame = CGRectMake(self.view.frame.width - 40, 80, 30, 30)
+            //button.backgroundColor = UIColor.greenColor()
+            //button.setTitle("Test Button", forState: UIControlState.Normal)
+            button.tag = 3
+            button.setImage(UIImage(named: "x.gif"), forState: UIControlState())
+            button.addTarget(self, action: "buttonAction:", forControlEvents: UIControlEvents.TouchUpInside)
+        
+            self.view.addSubview(button)
+            
+        }
         
     }
     
@@ -227,25 +239,33 @@ class modelDetail: UIViewController, UIWebViewDelegate {
                             
                                 newModel.prevFam = object["previousFamily"] as! NSArray
                             
-                                }
+                            }
                         
-                                if object["nextFamily"] != nil {
+                            if object["nextFamily"] != nil {
                             
                                 newModel.nextFam = object["nextFamily"] as! NSArray
                             
-                                }
+                            }
                         
-                                if object["similarModels"] != nil {
+                            if object["similarModels"] != nil {
                             
                                     newModel.simModels = object["similarModels"] as! NSArray
                             
-                                }
+                            }
                             
-                                if object["image"] != nil {
+                            if object["image"] != nil {
                             
                                     newModel.photo = object["image"] as! NSArray
                             
-                                }
+                            }
+                            
+                            if object["wiki"] != nil {
+                                
+                                newModel.wikiurl = object["wiki"] as! String
+                                
+                                println("added wikiurl")
+                                
+                            }
                         
                         
                                 self.specificModels.append(newModel)
@@ -342,6 +362,14 @@ class modelDetail: UIViewController, UIWebViewDelegate {
                         if object["image"] != nil {
                             
                             newModel.photo = object["image"] as! NSArray
+                            
+                        }
+                        
+                        if object["wiki"] != nil {
+                            
+                            newModel.wikiurl = object["wiki"] as! String
+                            
+                            println("added wikiurl")
                             
                         }
                         
